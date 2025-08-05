@@ -43,6 +43,12 @@ body {
 }
 
 @media only screen and (max-width: 600px) {
+
+  .section {
+    max-width: 600px;
+    margin: 0 auto 20px;
+  }
+
   .tile-grid {
     grid-template-columns: repeat(2, 1fr); /* 2 columns on smaller screens */
     gap: 10px;
