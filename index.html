@@ -59,6 +59,92 @@
         <img src="https://www.google.com/s2/favicons?domain=drive.google.com" alt="Drive" />
         <span>Drive</span>
       </div>
+      <div class="tile" onclick="window.open('https://docs.google.com')">
+        <img src="https://www.google.com/s2/favicons?domain=docs.google.com" alt="Google Docs" />
+        <span>Google Docs</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Tools</h2>
+    <div class="tile-grid">
+      <div class="tile" onclick="window.open('https://chat.openai.com')">
+        <img src="https://www.google.com/s2/favicons?domain=chat.openai.com" alt="ChatGPT" />
+        <span>ChatGPT</span>
+      </div>
+      <div class="tile" onclick="window.open('https://www.deepl.com/translator')">
+        <img src="https://www.google.com/s2/favicons?domain=deepl.com" alt="DeepL" />
+        <span>DeepL</span>
+      </div>
+      <div class="tile" onclick="window.open('https://www.canva.com')">
+        <img src="https://www.google.com/s2/favicons?domain=canva.com" alt="Canva" />
+        <span>Canva</span>
+      </div>
+      <div class="tile" onclick="window.open('https://www.remove.bg')">
+        <img src="https://www.google.com/s2/favicons?domain=remove.bg" alt="Remove.bg" />
+        <span>Remove.bg</span>
+      </div>
+      <div class="tile" onclick="window.open('data:text/html, <body style=&quot;margin:0;auto;padding:4rem;background-color: gray;&quot;><div contenteditable style=&quot;font: 2rem/1.5 monospace;max-width:80rem;margin:0 auto;padding:4rem;background-color: white; min-height:80rem;&quot;></div></body>')">
+        <img src="https://www.google.com/s2/favicons?domain=example.com" alt="Scratchpad" />
+        <span>Scratchpad</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Dev Tools</h2>
+    <div class="tile-grid">
+      <div class="tile" onclick="window.open('https://flutter.dev')">
+        <img src="https://www.google.com/s2/favicons?domain=flutter.dev" alt="Flutter" />
+        <span>Flutter</span>
+      </div>
+      <div class="tile" onclick="window.open('https://pub.dev')">
+        <img src="https://www.google.com/s2/favicons?domain=pub.dev" alt="Pub.dev" />
+        <span>pub.dev</span>
+      </div>
+      <div class="tile" onclick="window.open('https://dart.dev')">
+        <img src="https://www.google.com/s2/favicons?domain=dart.dev" alt="Dart" />
+        <span>Dart</span>
+      </div>
+      <div class="tile" onclick="window.open('https://github.com')">
+        <img src="https://www.google.com/s2/favicons?domain=github.com" alt="GitHub" />
+        <span>GitHub</span>
+      </div>
+      <div class="tile" onclick="window.open('https://codepen.io')">
+        <img src="https://www.google.com/s2/favicons?domain=codepen.io" alt="CodePen" />
+        <span>CodePen</span>
+      </div>
+      <div class="tile" onclick="window.open('https://vscode.dev/')">
+        <img src="https://www.google.com/s2/favicons?domain=vscode.dev" alt="CodePen" />
+        <span>VSCode.dev</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Utilities</h2>
+    <div class="tile-grid">
+      <div class="tile" onclick="window.open('https://www.speedtest.net')">
+        <img src="https://www.google.com/s2/favicons?domain=speedtest.net" alt="Speedtest" />
+        <span>Speedtest</span>
+      </div>
+      <div class="tile" onclick="window.open('https://fast.com')">
+        <img src="https://www.google.com/s2/favicons?domain=fast.com" alt="Fast.com" />
+        <span>Fast.com</span>
+      </div>
+      <div class="tile" onclick="window.open('https://downdetector.com')">
+        <img src="https://www.google.com/s2/favicons?domain=downdetector.com" alt="DownDetector" />
+        <span>DownDetector</span>
+      </div>
+      <div class="tile" onclick="window.open('https://weather.com')">
+        <img src="https://www.google.com/s2/favicons?domain=weather.com" alt="Weather" />
+        <span>Weather</span>
+      </div>
+      <div class="tile" onclick="window.open('https://dnsleaktest.com')">
+        <img src="https://www.google.com/s2/favicons?domain=dnsleaktest.com" alt="DNS Leak Test" />
+        <span>DNS Leak Test</span>
+      </div>
     </div>
   </div>
 
@@ -77,5 +163,51 @@
       <!-- Add more tiles -->
     </div>
   </div>
+
+  <div class="section">
+    <h2>Current Weather</h2>
+    <div id="weather-box">Loading weather...</div>
+  </div>
+
+
+
+  <script>
+  async function fetchWeather(lat, lon) {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
+    const response = await fetch(url);
+    const data = await response.json();
+    const weather = data.current_weather;
+    const box = document.getElementById("weather-box");
+
+    const temperature = weather.temperature;
+    const wind = weather.windspeed;
+    const symbol = getWeatherIcon(weather.weathercode);
+
+    box.innerHTML = `${symbol} ${temperature}°C &nbsp; | &nbsp; Wind ${wind} km/h`;
+  }
+
+  function getWeatherIcon(code) {
+    // Simplified icons for some common weather codes
+    const map = {
+      0: '☀️',       // Clear
+      1: '🌤️',      // Mainly clear
+      2: '⛅',       // Partly cloudy
+      3: '☁️',       // Overcast
+      45: '🌫️',     // Fog
+      61: '🌧️',     // Light rain
+      71: '❄️',     // Snow
+      95: '⛈️',     // Thunderstorm
+    };
+    return map[code] || '🌡️';
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    pos => fetchWeather(pos.coords.latitude, pos.coords.longitude),
+    err => {
+      document.getElementById("weather-box").innerText = "Location blocked - can't load weather.";
+    }
+  );
+</script>
+
 </body>
 </html>

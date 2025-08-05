@@ -138,3 +138,10 @@ body {
   cursor: pointer;
   font-size: 18px;
 }
+
+#weather-box {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #333;
+  padding: 1rem;
+}
