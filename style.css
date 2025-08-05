@@ -1,7 +1,7 @@
 body {
   margin: 0;
   background-color: #f9f9f9;
-  background-image: "background.jpg";
+  background-image: image('background.jpg');
   font-family: sans-serif;
   padding: 40px 20px;
 }
