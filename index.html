@@ -179,7 +179,8 @@
     const wind = weather.windspeed;
     const symbol = getWeatherIcon(weather.weathercode);
 
-    box.innerHTML = `${symbol} ${temperature}°C &nbsp; | &nbsp; Wind ${wind} km/h`;
+    box.innerHTML = `<span class="weather-icon">${symbol}</span> ${temperature}°C &nbsp; | &nbsp; Wind ${wind} km/h`;
+
   }
 
   function getWeatherIcon(code) {
