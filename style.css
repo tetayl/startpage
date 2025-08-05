@@ -1,0 +1,40 @@
+body {
+  margin: 0;
+  background-color: #f9f9f9;
+  font-family: sans-serif;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 20px;
+  padding: 40px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.tile {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  text-align: center;
+  padding: 20px;
+  cursor: pointer;
+  transition: transform 0.1s ease-in-out;
+}
+
+.tile:hover {
+  transform: scale(1.05);
+}
+
+.tile img {
+  width: 32px;
+  height: 32px;
+}
+
+.tile span {
+  display: block;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #333;
+}
