@@ -1,10 +1,15 @@
 body {
   margin: 0;
   background-color: #f9f9f9;
-  background-image: image('background.jpg');
+  background-image: url('background.jpg');
+  background-size: cover; /* Optional: makes image cover full background */
+  background-position: center;
   font-family: sans-serif;
   padding: 40px 20px;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
+
 
 .section {
   max-width: 1000px;
