@@ -185,16 +185,16 @@
 
   function getWeatherIcon(code) {
     // Simplified icons for some common weather codes
-  const map = {
-    0: '☀️',       // Clear
-    1: '🌤',       // Mainly clear (may break - fallback to ☀)
-    2: '⛅',       // Partly cloudy (fair support)
-    3: '☁️',       // Overcast
-    45: '🌫️',     // Fog (may render poorly)
-    61: '🌧️',     // Rain
-    71: '❄️',     // Snow
-    95: '⛈️',     // Thunderstorm
-  };
+    const map = {
+      0: '☀️',       // Clear
+      1: '🌤️',      // Mainly clear
+      2: '⛅',       // Partly cloudy
+      3: '☁️',       // Overcast
+      45: '🌫️',     // Fog
+      61: '🌧️',     // Light rain
+      71: '❄️',     // Snow
+      95: '⛈️',     // Thunderstorm
+    };
     return map[code] || '🌡️';
   }
 
