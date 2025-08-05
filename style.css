@@ -23,6 +23,15 @@ body {
   justify-items: center;
 }
 
+@media only screen and (max-width: 600px) {
+  .tile-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  
+}
+
+
 .tile {
   background: white;
   border-radius: 12px;
