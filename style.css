@@ -156,3 +156,9 @@ body {
   margin-bottom: 1rem;
   color: #333;
 }
+.weather-warning {
+  text-align: center;
+  color: #b00;
+  font-weight: bold;
+  margin-top: 1rem;
+}
