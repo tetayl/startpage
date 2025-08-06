@@ -8,7 +8,8 @@
 </head>
 <body>
   <div class="section">
-    <div id="weather-box">Loading weather...</div>
+    <div id="weather-box">Ladataan säätä...</div>
+    <div id="finnish-date"></div>
   </div>
   <div class="search-bar">
     <form action="https://www.google.com/search" method="get" target="_blank">
@@ -179,9 +180,9 @@
     const wind = weather.windspeed;
     const symbol = getWeatherIcon(weather.weathercode);
 
-    box.innerHTML = `<span class="weather-icon">${symbol}</span> ${temperature}°C &nbsp; | &nbsp; Wind ${wind} km/h`;
-
+    box.innerHTML = `<span class="weather-icon">${symbol}</span> ${temperature}°C &nbsp; | &nbsp; Tuuli ${wind} km/h`;
   }
+
 
   function getWeatherIcon(code) {
     // Simplified icons for some common weather codes
@@ -201,9 +202,15 @@
   navigator.geolocation.getCurrentPosition(
     pos => fetchWeather(pos.coords.latitude, pos.coords.longitude),
     err => {
-      document.getElementById("weather-box").innerText = "Location blocked - can't load weather.";
+      document.getElementById("weather-box").innerText = "Sijainti estetty - säätietoja ei voida ladata.";
     }
   );
+</script>
+<script>
+  const dateElement = document.getElementById("finnish-date");
+  const today = new Date();
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  dateElement.innerText = today.toLocaleDateString('fi-FI', options);
 </script>
 
 </body>
