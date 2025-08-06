@@ -169,19 +169,22 @@
   </div>
 
   <script>
-  async function fetchWeather(lat, lon) {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
-    const response = await fetch(url);
-    const data = await response.json();
-    const weather = data.current_weather;
-    const box = document.getElementById("weather-box");
+async function fetchWeather(lat, lon) {
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
+  const response = await fetch(url);
+  const data = await response.json();
+  const weather = data.current_weather;
+  const box = document.getElementById("weather-box");
 
-    const temperature = weather.temperature;
-    const wind = weather.windspeed;
-    const symbol = getWeatherIcon(weather.weathercode);
+  const temperature = weather.temperature;
+  const windKmh = weather.windspeed;
+  const windMs = (windKmh * 0.27778).toFixed(1);  // Round to 1 decimal
 
-    box.innerHTML = `<span class="weather-icon">${symbol}</span> ${temperature}°C &nbsp; | &nbsp; Tuuli ${wind} km/h`;
-  }
+  const symbol = getWeatherIcon(weather.weathercode);
+
+  box.innerHTML = `<span class="weather-icon">${symbol}</span> ${temperature}°C &nbsp; | &nbsp; Tuuli ${windMs} m/s`;
+}
+
 
 
   function getWeatherIcon(code) {
