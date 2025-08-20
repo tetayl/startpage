@@ -296,25 +296,102 @@
 </script>
 
 <script>
-  // Parse query params
+  // Helper to slugify section titles like "Yle Areena" -> "yle-areena"
+  function slugify(str) {
+    return str
+      .toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  // Collect all .section blocks that have an <h2>
+  const contentSections = Array.from(document.querySelectorAll('.section'))
+    .map(sec => ({ sec, h2: sec.querySelector('h2') }))
+    .filter(x => x.h2);
+
+  const sectionOrder = contentSections.map(x => ({
+    slug: slugify(x.h2.textContent.trim()),
+    el: x.sec
+  }));
+
   const params = new URLSearchParams(window.location.search);
-  const show = params.get("show");
+  const initialShow = params.get('show');
 
-  if (show) {
-    // hide all sections first
-    document.querySelectorAll(".section").forEach(sec => {
-      sec.style.display = "none";
-    });
+  function hideAllSections() {
+    document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+  }
 
-    // find the matching section by heading text
-    document.querySelectorAll(".section").forEach(sec => {
-      const h2 = sec.querySelector("h2");
-      if (h2 && h2.textContent.toLowerCase() === show.toLowerCase()) {
-        sec.style.display = "block";
+  function showOnly(slug) {
+    hideAllSections();
+    const item = sectionOrder.find(s => s.slug === slug);
+    if (!item) return;
+    item.el.style.display = 'block';
+
+    // Update URL param without reloading
+    const url = new URL(window.location.href);
+    url.searchParams.set('show', slug);
+    history.replaceState(null, '', url.toString());
+  }
+
+  if (initialShow) {
+    const wantedSlug = slugify(initialShow);
+    const exists = sectionOrder.find(s => s.slug === wantedSlug);
+    if (exists) showOnly(wantedSlug);
+
+    // Navigation between sections
+    let switching = false;
+    function navigate(delta) {
+      if (switching) return;
+      switching = true;
+      const currentSlug = new URLSearchParams(window.location.search).get('show');
+      const idx = sectionOrder.findIndex(s => s.slug === currentSlug);
+      if (idx === -1) return;
+
+      const nextIdx = delta > 0
+        ? (idx + 1) % sectionOrder.length
+        : (idx - 1 + sectionOrder.length) % sectionOrder.length;
+
+      showOnly(sectionOrder[nextIdx].slug);
+      setTimeout(() => switching = false, 500);
+    }
+
+    // Wheel listener
+    window.addEventListener('wheel', (e) => {
+      const onlyOneVisible = sectionOrder.filter(s => s.el.style.display !== 'none').length === 1;
+      if (!onlyOneVisible) return;
+
+      e.preventDefault();
+      if (Math.abs(e.deltaY) < 3 && Math.abs(e.deltaX) < 3) return;
+      navigate(e.deltaY > 0 ? 1 : -1);
+    }, { passive: false });
+
+    // Trackpad / smooth scrolling support
+    let accum = 0;
+    window.addEventListener('wheel', (e) => {
+      const onlyOneVisible = sectionOrder.filter(s => s.el.style.display !== 'none').length === 1;
+      if (!onlyOneVisible) return;
+
+      accum += e.deltaY;
+      if (Math.abs(accum) > 80) {
+        navigate(accum > 0 ? 1 : -1);
+        accum = 0;
+      }
+    }, { passive: true });
+
+    // Keyboard support
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+        e.preventDefault();
+        navigate(1);
+      } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault();
+        navigate(-1);
       }
     });
   }
 </script>
+
 
 
 </body>
