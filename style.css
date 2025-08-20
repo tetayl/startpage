@@ -11,6 +11,26 @@ body {
 }
 
 
+/* Background crossfade layers */
+.bg-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* nice parallax feel */
+  opacity: 0;
+  transition: opacity 600ms ease;
+  pointer-events: none;
+}
+
+#content { position: relative; z-index: 1; }
+
+/* whichever is "on" */
+.bg-layer.visible { opacity: 1; }
+
+/* keep your section animation */
 .section {
   max-width: 1000px;
   margin: 0 auto 60px;
@@ -23,10 +43,12 @@ body {
   opacity: 0;
   transform: translateY(20px);
   pointer-events: none;
-  max-height: 0;      /* collapses space */
-  overflow: hidden;   /* prevent content from spilling */
-  margin: 0;          /* remove bottom margin when hidden */
+  /* For normal scrolling in no-show mode, do NOT absolute-position hidden sections */
+  max-height: 0;
+  overflow: hidden;
+  margin: 0;
 }
+
 
 
 .section h2 {
