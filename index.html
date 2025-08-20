@@ -319,16 +319,15 @@
   const initialShow = params.get('show');
 
   function hideAllSections() {
-    document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+    sectionOrder.forEach(s => s.el.classList.add("hidden"));
   }
 
   function showOnly(slug) {
     hideAllSections();
     const item = sectionOrder.find(s => s.slug === slug);
     if (!item) return;
-    item.el.style.display = 'block';
+    item.el.classList.remove("hidden");
 
-    // Update URL param without reloading
     const url = new URL(window.location.href);
     url.searchParams.set('show', slug);
     history.replaceState(null, '', url.toString());
