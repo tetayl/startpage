@@ -295,5 +295,27 @@
   dateElement.innerText = today.toLocaleDateString('fi-FI', options);
 </script>
 
+<script>
+  // Parse query params
+  const params = new URLSearchParams(window.location.search);
+  const show = params.get("show");
+
+  if (show) {
+    // hide all sections first
+    document.querySelectorAll(".section").forEach(sec => {
+      sec.style.display = "none";
+    });
+
+    // find the matching section by heading text
+    document.querySelectorAll(".section").forEach(sec => {
+      const h2 = sec.querySelector("h2");
+      if (h2 && h2.textContent.toLowerCase() === show.toLowerCase()) {
+        sec.style.display = "block";
+      }
+    });
+  }
+</script>
+
+
 </body>
 </html>
