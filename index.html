@@ -7,6 +7,10 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div id="bg-a" class="bg-layer"></div>
+  <div id="bg-b" class="bg-layer"></div>
+  <div id="content">
+
   <div class="weather-bar">
     <div id="weather-box">Ladataan säätä...</div>
     <div id="weather-warnings"></div>
@@ -214,6 +218,7 @@
       <!-- Add more tiles -->
     </div>
   </div>
+  </div>
 
   <script>
   async function fetchWeather(lat, lon) {
@@ -296,6 +301,7 @@
 </script>
 
 <script>
+  // 1) slugify and section indexing
   function slugify(str) {
     return str
       .toLowerCase()
@@ -316,6 +322,48 @@
   const params = new URLSearchParams(window.location.search);
   const initialShow = params.get('show');
 
+  // 2) background mapping and crossfade
+  const bgBySlug = {
+    'uutiset': 'news.jpg',
+    'media': 'movies.jpg',
+    'google': 'search.jpg',
+    'tyokalut': 'tools.jpg',
+    'kehitystyokalut': 'devtools.jpg',
+    'verkkotyokalut': 'nettools.jpg',
+    'some': 'some.jpg'
+  };
+
+  // Preload to avoid flicker
+  Object.values(bgBySlug).forEach(src => { const i = new Image(); i.src = src; });
+
+  const bgA = document.getElementById('bg-a');
+  const bgB = document.getElementById('bg-b');
+  let activeBg = bgA;
+
+  function setBackgroundFor(slug) {
+    const file = bgBySlug[slug];
+    if (!file) return; // no special bg -> keep default body background
+
+    const incoming = activeBg === bgA ? bgB : bgA;
+    incoming.style.backgroundImage = `url('${file}')`;
+    // force reflow so transition triggers
+    void incoming.offsetWidth;
+    incoming.classList.add('visible');
+    activeBg.classList.remove('visible');
+    activeBg = incoming;
+  }
+
+  // If initial single-section view has a mapped background, show it instantly
+  if (initialShow) {
+    const wanted = slugify(initialShow);
+    const file = bgBySlug[wanted];
+    if (file) {
+      activeBg.style.backgroundImage = `url('${file}')`;
+      activeBg.classList.add('visible');
+    }
+  }
+
+  // 3) helpers to hide/show sections
   function hideAllSections() {
     sectionOrder.forEach(s => {
       s.el.classList.add('hidden');
@@ -327,24 +375,30 @@
     hideAllSections();
     const item = sectionOrder.find(s => s.slug === slug);
     if (!item) return;
+
     item.el.classList.remove('hidden');
     item.el.setAttribute('aria-hidden', 'false');
 
+    // crossfade background for this section
+    setBackgroundFor(slug);
+
+    // keep URL in sync
     const url = new URL(window.location.href);
     url.searchParams.set('show', slug);
     history.replaceState(null, '', url.toString());
   }
 
-  // helper to know if we are in single-section mode and exactly one is visible
   function onlyOneVisible() {
     return sectionOrder.filter(s => !s.el.classList.contains('hidden')).length === 1;
   }
 
+  // 4) apply initial show if present
   if (initialShow) {
     const wantedSlug = slugify(initialShow);
     const exists = sectionOrder.find(s => s.slug === wantedSlug);
     if (exists) showOnly(wantedSlug);
 
+    // 5) navigation bindings
     let switching = false;
     function navigate(delta) {
       if (switching) return;
@@ -363,13 +417,13 @@
 
     // wheel listener
     window.addEventListener('wheel', (e) => {
-      if (!onlyOneVisible()) return;  // do nothing if not in single-section mode
+      if (!onlyOneVisible()) return;
       e.preventDefault();
       if (Math.abs(e.deltaY) < 3 && Math.abs(e.deltaX) < 3) return;
       navigate(e.deltaY > 0 ? 1 : -1);
     }, { passive: false });
 
-    // trackpad support
+    // trackpad accumulation
     let accum = 0;
     window.addEventListener('wheel', (e) => {
       if (!onlyOneVisible()) return;
@@ -393,8 +447,6 @@
     });
   }
 </script>
-
-
 
 
 </body>
