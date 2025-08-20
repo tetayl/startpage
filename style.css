@@ -71,13 +71,13 @@ body {
 
 .weather-bar,
 .weather-bar * {
-  color: white;
+  color: #222;
   -webkit-text-stroke: 0.5px black;
   text-shadow:
-    -1px -1px 0 #000,
-     1px -1px 0 #000,
-    -1px  1px 0 #000,
-     1px  1px 0 #000;
+    -1px -1px 0 white,
+     1px -1px 0 white,
+    -1px  1px 0 white,
+     1px  1px 0 white;
 }
 
 .tile {
