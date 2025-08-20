@@ -296,7 +296,6 @@
 </script>
 
 <script>
-  // Helper to slugify section titles like "Yle Areena" -> "yle-areena"
   function slugify(str) {
     return str
       .toLowerCase()
@@ -305,7 +304,6 @@
       .replace(/^-+|-+$/g, '');
   }
 
-  // Collect all .section blocks that have an <h2>
   const contentSections = Array.from(document.querySelectorAll('.section'))
     .map(sec => ({ sec, h2: sec.querySelector('h2') }))
     .filter(x => x.h2);
@@ -319,18 +317,27 @@
   const initialShow = params.get('show');
 
   function hideAllSections() {
-    sectionOrder.forEach(s => s.el.classList.add("hidden"));
+    sectionOrder.forEach(s => {
+      s.el.classList.add('hidden');
+      s.el.setAttribute('aria-hidden', 'true');
+    });
   }
 
   function showOnly(slug) {
     hideAllSections();
     const item = sectionOrder.find(s => s.slug === slug);
     if (!item) return;
-    item.el.classList.remove("hidden");
+    item.el.classList.remove('hidden');
+    item.el.setAttribute('aria-hidden', 'false');
 
     const url = new URL(window.location.href);
     url.searchParams.set('show', slug);
     history.replaceState(null, '', url.toString());
+  }
+
+  // helper to know if we are in single-section mode and exactly one is visible
+  function onlyOneVisible() {
+    return sectionOrder.filter(s => !s.el.classList.contains('hidden')).length === 1;
   }
 
   if (initialShow) {
@@ -338,7 +345,6 @@
     const exists = sectionOrder.find(s => s.slug === wantedSlug);
     if (exists) showOnly(wantedSlug);
 
-    // Navigation between sections
     let switching = false;
     function navigate(delta) {
       if (switching) return;
@@ -355,22 +361,18 @@
       setTimeout(() => switching = false, 500);
     }
 
-    // Wheel listener
+    // wheel listener
     window.addEventListener('wheel', (e) => {
-      const onlyOneVisible = sectionOrder.filter(s => s.el.style.display !== 'none').length === 1;
-      if (!onlyOneVisible) return;
-
+      if (!onlyOneVisible()) return;  // do nothing if not in single-section mode
       e.preventDefault();
       if (Math.abs(e.deltaY) < 3 && Math.abs(e.deltaX) < 3) return;
       navigate(e.deltaY > 0 ? 1 : -1);
     }, { passive: false });
 
-    // Trackpad / smooth scrolling support
+    // trackpad support
     let accum = 0;
     window.addEventListener('wheel', (e) => {
-      const onlyOneVisible = sectionOrder.filter(s => s.el.style.display !== 'none').length === 1;
-      if (!onlyOneVisible) return;
-
+      if (!onlyOneVisible()) return;
       accum += e.deltaY;
       if (Math.abs(accum) > 80) {
         navigate(accum > 0 ? 1 : -1);
@@ -378,8 +380,9 @@
       }
     }, { passive: true });
 
-    // Keyboard support
+    // keyboard support
     window.addEventListener('keydown', (e) => {
+      if (!onlyOneVisible()) return;
       if (e.key === 'ArrowDown' || e.key === 'PageDown') {
         e.preventDefault();
         navigate(1);
@@ -390,6 +393,7 @@
     });
   }
 </script>
+
 
 
 

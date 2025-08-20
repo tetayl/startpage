@@ -21,11 +21,13 @@ body {
 
 .section.hidden {
   opacity: 0;
-  transform: translateY(20px); /* slide down a bit */
+  transform: translateY(20px);
   pointer-events: none;
-  position: absolute; /* prevents layout shifts */
-  width: 100%;
+  max-height: 0;      /* collapses space */
+  overflow: hidden;   /* prevent content from spilling */
+  margin: 0;          /* remove bottom margin when hidden */
 }
+
 
 .section h2 {
   margin-bottom: 20px;
